@@ -19,6 +19,7 @@
         <option value="1">Point Light</option>
         <option value="2">Hemisphere Light</option>
         <option value="3">Directional Light</option>
+        <option value="4">Spotlight</option>
     </select>
 </body>
 </html>
@@ -91,8 +92,10 @@
             hemisphere.position.set(-10, 10, 0);
             const directional = new THREE.DirectionalLight( 0xffffff );
             directional.position.set( 0, 1, 1 ).normalize();
+            const spotlight = new THREE.SpotLight(0xffffff, 1, 75);
+            spotlight.position.set(105, 10, 10);
 
-            const lights = [ambient, point, hemisphere, directional];
+            const lights = [ambient, point, hemisphere, directional, spotlight];
 
             lights.forEach((light) => scene.add(light));
 
