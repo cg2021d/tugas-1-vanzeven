@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Tugas Three.js</title>
+    <script src="three.min.js"></script>
+    <style>
+        body {
+            font-size: 20px;
+            background-color: #000000;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <p style="color:white">Faisal Reza M - 05111940000009</p>
+    <p style="color:white">Pilih Pencahayaan</p>
+    <select name="light" id="light" >
+        <option value="0">Ambient Light</option>
+        <option value="1">Point Light</option>
+        <option value="2">Hemisphere Light</option>
+        <option value="3">Directional Light</option>
+    </select>
+</body>
+</html>
+
+
+<script>    
+        let scene, camera, renderer, cylinder, cone, sphere, torusKnot, octahedron, torus;
+        
+        let createCylinder = function(){
+            let geometry = new THREE.CylinderGeometry(1,1,3);
+            let material = new THREE.MeshPhongMaterial({color:0x00FF00, emissive:0x0, shininess:100});
+            cylinder = new THREE.Mesh( geometry, material );
+            scene.add(cylinder);
+            cylinder.position.set(5, -5, 0)
+        }
+
+        let createSphere = function(){
+            let geometry = new THREE.SphereGeometry(2, 10, 8);
+            let material = new THREE.MeshPhongMaterial({color: 0x8872C1, wireframe: true, shininess: 100});
+            sphere = new THREE.Mesh(geometry, material);
+            scene.add(sphere);
+            sphere.position.set(-5, -5, 0)
+        }
+
+        let createCone = function(){
+            let geometry = new THREE.ConeGeometry(2, 4, 20);
+            let material = new THREE.MeshNormalMaterial( {color: 0xA955EF, flatShading: true} );
+            cone = new THREE.Mesh(geometry, material);
+            scene.add(cone);
+            cone.position.set(0, -5, 0)
+        }
+
+        let createTorusKnot = function(){
+            let geometry = new THREE.TorusKnotGeometry();
+            let material = new THREE.MeshNormalMaterial( { color: 0xEF5584, tubularSegments :103, radiantSegment:8, flatShading: true} );
+            torusKnot = new THREE.Mesh(geometry, material);
+            scene.add(torusKnot);
+            torusKnot.position.set(5,1.5,0);
+        }
+
+        let createOctahedron = function(){
+            let geometry = new THREE.OctahedronGeometry(2)
+            let material = new THREE.MeshPhongMaterial({color: 0xAB596E, wireframe: true, shininess: 100})
+            octahedron = new THREE.Mesh(geometry, material);
+            scene.add(octahedron);
+            octahedron.position.set(-5,1.5,0);
+        }
+
+        let createTorus = function(){
+            let geometry = new THREE.TorusGeometry(1, 0.4, 15, 25);
+            let material = new THREE.MeshToonMaterial({ color: 0x0000FF,emissive:0x0, shininess:100});
+            torus = new THREE.Mesh( geometry, material );
+            scene.add(torus);
+            torus.position.set(0,1.5,0);
+            
+        }
+
+        // set up the environment - 
+        // initiallize scene, camera, objects and renderer
+        let init = function() {
+            // 1. create the scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x00abab);
+
+            const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+            ambient.position.set(3, 0, 3);
+            const point = new THREE.PointLight(0xffffff, 1, 100);
+            point.position.set(-10, -10, 0);
+            const hemisphere = new THREE.HemisphereLight(0x87CEEB, 0x964B00, 1);
+            hemisphere.position.set(-10, 10, 0);
+            const directional = new THREE.DirectionalLight( 0xffffff );
+            directional.position.set( 0, 1, 1 ).normalize();
+
+            const lights = [ambient, point, hemisphere, directional];
+
+            lights.forEach((light) => scene.add(light));
+
+            lights.forEach((light) => {
+                    light.visible = false;
+            });
+            lights[0].visible = true;
+
+            const selectedLight = document.getElementById('light');
+            selectedLight.addEventListener('change', (e) => {
+                    const selected = e.target.value;
+                    lights.forEach((light) => {
+                            light.visible = false;
+                    });
+                    lights[selected].visible = true;
+            });
+            
+            // 2. create an locate the camera      
+            camera = new THREE.PerspectiveCamera(1000, window.innerWidth / window.innerHeight, 
+                        1, 1000);
+            camera.position.z = 10;
+            
+            // 3. create an locate the object on the scene           
+            createCylinder();
+            createSphere();
+            createCone();
+            createTorusKnot();
+            createOctahedron();
+            createTorus();
+            
+        //     var light = new THREE.DirectionalLight( 0xffffff );
+        //     light.position.set( 0, 1, 1 ).normalize();
+        //     scene.add(light);
+
+
+            // 4. create the renderer     
+            renderer = new THREE.WebGLRenderer();   
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            
+            document.body.appendChild(renderer.domElement);
+          
+        };
+      
+        
+        // main animation loop - calls 50-60 in a second.
+        let mainLoop = function() {
+        //     console.log("Hello");
+            sphere.rotation.x += 0.01;
+            sphere.rotation.y += 0.01;
+            cylinder.rotation.x += 0.02;
+            cylinder.rotation.y += 0.01;
+            cone.rotation.x += 0.02;
+            cone.rotation.y += 0.01;
+            torusKnot.rotation.x += 0.02;
+            torusKnot.rotation.y += 0.01;
+            octahedron.rotation.x += 0.02;
+            octahedron.rotation.y += 0.01;
+            torus.rotation.x += 0.02;
+            torus.rotation.y += 0.01;
+            renderer.render(scene, camera);
+            requestAnimationFrame(mainLoop);
+        };
+        
+        ///////////////////////////////////////////////
+        init();
+        mainLoop();
+    </script>
+    
